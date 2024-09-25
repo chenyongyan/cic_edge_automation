@@ -1,15 +1,10 @@
 #!/usr/bin/env python
 # -*- encoding: utf-8 -*-
-
 import unittest,json
 import os,openpyxl,pandas
-from public.MyDDT import ddt,data,unpack
+from public.myddt import ddt,data,unpack
 from public.method import method
 from public.readConfig import readConfig
-
-
-
-
 
 @ddt
 class case(unittest.TestCase):
@@ -18,7 +13,7 @@ class case(unittest.TestCase):
         self.readConfig = readConfig()
         self.method = method()
         ConfPath = self.readConfig.readConfi("Path", "conf_dir")
-        File = open(name=ConfPath + "config.json", mode='r', encoding='UTF-8')
+        File = open(file=ConfPath + "config.json", mode='r', encoding='UTF-8')
         self.file = json.load(File)
         self.key_list = []
 

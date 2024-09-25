@@ -6,72 +6,55 @@
   "母管压力参数码":"busPressureBar",
   "母管压力变送器":"1020070059",
   "devicemid":[
-    "1020070047",
-    "1020070048",
-    "1020070049",
-    "1020070050",
-    "1020070051",
-    "1020070052",
-    "1020070053",
-    "1020070054",
-    "1020070055",
-    "1020070056",
-    "1020070057",
-    "1020070058",
-    "1020070059",
-    "1020070060"
+      "1020070047",
+      "1020070048",
+      "1020070049",
+      "1020070050",
+      "1020070051",
+      "1020070052",
+      "1020070053",
+      "1020070054",
+      "1020070055",
+      "1020070056",
+      "1020070057",
+      "1020070058",
+      "1020070059",
+      "1020070060"
   ],
   "enableArray":[
-    {"enable": false, "mid": "1020070047"},
-    {"enable": false, "mid": "1020070048"},
-    {"enable": false, "mid": "1020070049"},
-    {"enable": false, "mid": "1020070050"},
-    {"enable": false, "mid": "1020070051"},
-    {"enable": false, "mid": "1020070052"},
-    {"enable": false, "mid": "1020070053"},
-    {"enable": false, "mid": "1020070054"},
-    {"enable": false, "mid": "1020070055"},
-    {"enable": false, "mid": "1020070056"},
-    {"enable": false, "mid": "1020070057"},
-    {"enable": false, "mid": "1020070058"}
+      {"enable": false, "mid": "1020070047"},
+      {"enable": false, "mid": "1020070048"},
+      {"enable": false, "mid": "1020070049"},
+      {"enable": false, "mid": "1020070050"},
+      {"enable": false, "mid": "1020070051"},
+      {"enable": false, "mid": "1020070052"},
+      {"enable": false, "mid": "1020070053"},
+      {"enable": false, "mid": "1020070054"},
+      {"enable": false, "mid": "1020070055"},
+      {"enable": false, "mid": "1020070056"},
+      {"enable": false, "mid": "1020070057"},
+      {"enable": false, "mid": "1020070058"}
   ],
   "device":{
-    "controlByDevice":"/api/devicesimu/ctrl",
-    "modify":"/api/devicesimu/modify",
-    "getDeviceDataByDevice":"/api/devicesimu/data",
-    "deviceRestart":"/api/devicesimu/restart"
+      "controlByDevice":"/api/devicesimu/ctrl",
+      "modify":"/api/devicesimu/modify",
+      "getDeviceDataByDevice":"/api/devicesimu/data",
+      "deviceRestart":"/api/devicesimu/restart"
   },
   "gateway":{
-    "controlDeviceByGeteway": "/api/gateway/device/ctrl",
-    "getDeviceDataByGeteway": "/api/gateway/device/data",
-    "gatewayData": "/api/gateway/data",
-    "modifyByGeteway": "/api/gateway/ctrl",
-    "joinQueue": "/api/gateway/jointqueue",
-    "protocolAndGatewayRestart": "/api/gateway/protocol"
+      "controlDeviceByGeteway": "/api/gateway/device/ctrl",
+      "getDeviceDataByGeteway": "/api/gateway/device/data",
+      "gatewayData": "/api/gateway/data",
+      "modifyByGeteway": "/api/gateway/ctrl",
+      "joinQueue": "/api/gateway/jointqueue",
+      "protocolAndGatewayRestart": "/api/gateway/protocol"
   },
   "mysql":{
-   "host":"",
-   "port":3306,
-   "user":"",
-   "password":"",
-   "database":""
-  },
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+     "host":"",
+     "port":3306,
+     "user":"",
+     "password":"",
+     "database":""
+  }
 
 }

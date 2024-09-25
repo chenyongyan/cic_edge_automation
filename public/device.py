@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 # -*- encoding: utf-8 -*-
-
 import requests,json
 import time
 from loguru import logger
@@ -13,7 +12,7 @@ class device:
         self.readConfig = readConfig()
         self.deviceName = deviceName()
         ConfPath = self.readConfig.readConfi("Path","conf_dir")
-        File = open(name=ConfPath + "config.json", mode='r', encoding='UTF-8')
+        File = open(file=ConfPath + "config.json", mode='r', encoding='UTF-8')
         self.file = json.load(File)
 
 

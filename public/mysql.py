@@ -1,15 +1,11 @@
 #!/usr/bin/env python
 # -*- encoding: utf-8 -*-
-
 import json
 import pymysql
 from rediscluster import RedisCluster
 from public.readConfig import readConfig
 
-
-
 class mysql:
-
 
     def __init__(self):
         self.readConfig = readConfig()

@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 # -*- encoding: utf-8 -*-
-
 import pandas,json,os,openpyxl,requests,time
 from loguru import logger
 from public.device import device

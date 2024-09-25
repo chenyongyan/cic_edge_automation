@@ -1,21 +1,18 @@
 #!/usr/bin/env python
 # -*- encoding: utf-8 -*-
-
 import requests,json
 from loguru import logger
 from public.deviceName import deviceName
 from public.readConfig import readConfig
 
 
-
 class deviceContrl:
-
 
     def __init__(self):
         self.readConfig = readConfig()
         self.deviceName = deviceName()
         ConfPath = self.readConfig.readConfi("Path","conf_dir")
-        File = open(name=ConfPath + "config.json", mode='r', encoding='UTF-8')
+        File = open(file=ConfPath + "config.json", mode='r', encoding='UTF-8')
         self.file = json.load(File)
 
 
