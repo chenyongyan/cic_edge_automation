@@ -11,7 +11,7 @@ class device:
     def __init__(self):
         self.readConfig = readConfig()
         self.deviceName = deviceName()
-        ConfPath = self.readConfig.readConfi("Path","conf_dir")
+        ConfPath = self.readConfig.readConfig("Path","conf_dir")
         File = open(file=ConfPath + "config.json", mode='r', encoding='UTF-8')
         self.file = json.load(File)
 

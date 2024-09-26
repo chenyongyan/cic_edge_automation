@@ -17,8 +17,8 @@ class method:
         self.gateway = gateway()
         self.deviceContrl = deviceContrl()
         self.readConfig = readConfig()
-        ConfPath = self.readConfig.readConfi("Path","conf_dir")
-        File = open(name=ConfPath + "config.json", mode='r', encoding='UTF-8')
+        ConfPath = self.readConfig.readConfig("Path","conf_dir")
+        File = open(file=ConfPath + "config.json", mode='r', encoding='UTF-8')
         self.file = json.load(File)
         self.time_list = []
 

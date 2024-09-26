@@ -3,10 +3,8 @@
 
 class deviceName:
 
-
     def __init__(self):
         pass
-
 
     def deviceMid(self,mid):
         """

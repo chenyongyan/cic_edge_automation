@@ -5,11 +5,10 @@ import configparser
 
 class readConfig(object):
 
-
     def __init__(self):
         pass
 
-    def readConfi(self,item,key):
+    def readConfig(self,item,key):
         """
         读取配置文件中的conf路径
         :param item:
