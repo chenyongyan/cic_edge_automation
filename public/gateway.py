@@ -13,7 +13,7 @@ class gateway:
         self.readConfig = readConfig()
         ConfPath = self.readConfig.readConfig("Path","conf_dir")
         File = open(file=ConfPath + "config.json", mode='r', encoding='UTF-8')
-        self.file = json.load(File)
+        self.jsondata = json.load(File)
 
 
     def controlDeviceByGeteway(self,mid,type):
@@ -24,7 +24,7 @@ class gateway:
         :return:
         """
         name = self.deviceName.deviceMid(mid=str(mid))
-        url = self.file['url'] + self.file['gatewayPort'] + self.file['gateway']['controlDeviceByGeteway']
+        url = self.jsondata['url'] + self.jsondata['gatewayPort'] + self.jsondata['gateway']['controlDeviceByGeteway']
         body = {"mid":str(mid),"type":type}
         response = requests.post(url=url,json=body,headers=None)
         try:
@@ -93,7 +93,7 @@ class gateway:
         :param mid:
         :return:
         """
-        url = self.file['url'] + self.file['gatewayPort'] + self.file['gateway']['getDeviceDataByGeteway']
+        url = self.jsondata['url'] + self.jsondata['gatewayPort'] + self.jsondata['gateway']['getDeviceDataByGeteway']
         body = {"mid":str(mid),"code":""}
         response = requests.post(url=url,json=body,headers=None,verify=False)
         try:
@@ -112,8 +112,8 @@ class gateway:
         网关系统数据查询,参数设置页面所有参数
         :return:
         """
-        url = self.file['url'] + self.file['gatewayPort'] + self.file['gateway']['gatewayData']
-        body = {"groupId":self.file['groupID']}
+        url = self.jsondata['url'] + self.jsondata['gatewayPort'] + self.jsondata['gateway']['gatewayData']
+        body = {"groupId":self.jsondata['groupID']}
         response = requests.post(url=url,json=body,headers=None,verify=False)
         try:
             text = str(response.text).replace("false", "False").replace("true", "True").replace("null", "None")
@@ -140,8 +140,8 @@ class gateway:
         :param device_type: 队列类型，1：空压机算法，2：干燥机算法
         :return:
         """
-        url = self.file['url'] + self.file['gatewayPort'] + self.file['gateway']['joinQueue']
-        body = {"groupId":self.file['groupID'],"type":device_type}
+        url = self.jsondata['url'] + self.jsondata['gatewayPort'] + self.jsondata['gateway']['joinQueue']
+        body = {"groupId":self.jsondata['groupID'],"type":device_type}
         response = requests.post(url=url,json=body,headers=None,verify=False)
         try:
             text = str(response.text).replace("false", "False").replace("true", "True").replace("null", "None")
@@ -169,8 +169,8 @@ class gateway:
         :param version: 版本号,version不传时,默认更到当前同步版本, 更新成功后网关程序自动重启
         :return:
         """
-        url = self.file['url'] + self.file['gatewayPort'] + self.file['gateway']['protocolAndGatewayRestart']
-        body = {"groupId":self.file['groupID'],"version":version}
+        url = self.jsondata['url'] + self.jsondata['gatewayPort'] + self.jsondata['gateway']['protocolAndGatewayRestart']
+        body = {"groupId":self.jsondata['groupID'],"version":version}
         response = requests.post(url=url,json=body,headers=None,verify=False)
         try:
             text = str(response.text).replace("false", "False").replace("true", "True").replace("null", "None")
@@ -196,8 +196,8 @@ class gateway:
         :param enableArray: [{"enable":False,"mid":"1020070085"},{"enable":False,"mid":"1020070084"},{"enable":False,"mid":"1020070083"},{"enable":False,"mid":"1020070082"}]
         :return:
         """
-        url = self.file['url'] + self.file['gatewayPort'] + self.file['gateway']['modifyByGeteway']
-        body = {"groupId":self.file['groupID'],
+        url = self.jsondata['url'] + self.jsondata['gatewayPort'] + self.jsondata['gateway']['modifyByGeteway']
+        body = {"groupId":self.jsondata['groupID'],
                 "jointEnable":jointEnable,
                 "upLimitPress":upLimitPress,
                 "endPress":endPress,

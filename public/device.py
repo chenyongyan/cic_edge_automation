@@ -13,7 +13,7 @@ class device:
         self.deviceName = deviceName()
         ConfPath = self.readConfig.readConfig("Path","conf_dir")
         File = open(file=ConfPath + "config.json", mode='r', encoding='UTF-8')
-        self.file = json.load(File)
+        self.jsondata = json.load(File)
 
 
     def controlByDevice(self,mid,type):
@@ -24,7 +24,7 @@ class device:
         :return:
         """
         name = self.deviceName.deviceMid(mid=str(mid))
-        url = self.file['url'] + self.file['devicePort'] + self.file['device']['controlByDevice']
+        url = self.jsondata['url'] + self.jsondata['devicePort'] + self.jsondata['device']['controlByDevice']
         body = {"mid":str(mid),"type":type}
         response = requests.post(url=url,json=body,headers=None,verify=False)
         try:
@@ -98,7 +98,7 @@ class device:
         """
         name = self.deviceName.deviceMid(mid=str(mid))
         pressure = self.deviceName.protocolCode(code=str(code))
-        url = self.file['url'] + self.file['devicePort'] + self.file['device']['modify']
+        url = self.jsondata['url'] + self.jsondata['devicePort'] + self.jsondata['device']['modify']
         body = {"mid":str(mid),"code":str(code),"value":value}
         response = requests.post(url=url,json=body,headers=None,verify=False)
         try:
@@ -123,7 +123,7 @@ class device:
         """
         name = self.deviceName.deviceMid(mid=str(mid))
         pressure = self.deviceName.protocolCode(code=str(code))
-        url = self.file['url'] + self.file['devicePort'] + self.file['device']['getDeviceDataByDevice']
+        url = self.jsondata['url'] + self.jsondata['devicePort'] + self.jsondata['device']['getDeviceDataByDevice']
         body = {"mid":str(mid),"code":str(code)}
         response = requests.post(url=url,json=body,headers=None,verify=False)
         try:
@@ -144,7 +144,7 @@ class device:
         :param type_restart: 0:关闭,1:重启
         :return:
         """
-        url = self.file['url'] + self.file['devicePort'] + self.file['device']['deviceRestart']
+        url = self.jsondata['url'] + self.jsondata['devicePort'] + self.jsondata['device']['deviceRestart']
         body = {"type":status}
         response = requests.post(url=url,json=body,headers=None,verify=False)
         try:
@@ -176,8 +176,8 @@ class device:
         equepment = self.deviceName.deviceMid(mid=str(mid))
         device.controlByDevice(mid=str(mid),type=6)
         enableArray = [{"enable":False,"mid":str(mid)}]
-        url = self.file['url'] + self.file['gatewayPort'] + self.file['gateway']['modifyByGeteway']
-        body = {"groupId":self.file['groupID'],"enableArray": enableArray}
+        url = self.jsondata['url'] + self.jsondata['gatewayPort'] + self.jsondata['gateway']['modifyByGeteway']
+        body = {"groupId":self.jsondata['groupID'],"enableArray": enableArray}
         response = requests.post(url=url,json=body,headers=None,verify=False)
         try:
             text = str(response.text).replace("false", "False").replace("true", "True").replace("null", "None")
@@ -189,8 +189,8 @@ class device:
             logger.warning('请求报文：{}'.format(body))
             logger.warning('返回信息：{}'.format(response.text))
         enable = [{"enable":True,"mid": str(mid)}]
-        urlJoin = self.file['url'] + self.file['gatewayPort'] + self.file['gateway']['modifyByGeteway']
-        bodyJoin = {"groupId":self.file['groupID'],"enableArray": enable}
+        urlJoin = self.jsondata['url'] + self.jsondata['gatewayPort'] + self.jsondata['gateway']['modifyByGeteway']
+        bodyJoin = {"groupId":self.jsondata['groupID'],"enableArray": enable}
         responseJoin = requests.post(url=urlJoin, json=bodyJoin, headers=None, verify=False)
         try:
             textJoin = str(responseJoin.text).replace("false", "False").replace("true", "True").replace("null", "None")

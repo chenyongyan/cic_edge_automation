@@ -13,7 +13,7 @@ class deviceContrl:
         self.deviceName = deviceName()
         ConfPath = self.readConfig.readConfig("Path","conf_dir")
         File = open(file=ConfPath + "config.json", mode='r', encoding='UTF-8')
-        self.file = json.load(File)
+        self.jsondata = json.load(File)
 
 
     def deviceStop(self,mid):
@@ -23,8 +23,8 @@ class deviceContrl:
         :return:
         """
         name = self.deviceName.deviceMid(mid=str(mid))
-        urlGateWay = self.file['url'] + self.file['gatewayPort'] + self.file['gateway']['controlDeviceByGeteway']
-        urlByDevice = self.file['url'] + self.file['devicePort'] + self.file['device']['controlByDevice']
+        urlGateWay = self.jsondata['url'] + self.jsondata['gatewayPort'] + self.jsondata['gateway']['controlDeviceByGeteway']
+        urlByDevice = self.jsondata['url'] + self.jsondata['devicePort'] + self.jsondata['device']['controlByDevice']
         body = {"mid":str(mid), "type":2}
         response = requests.post(url=urlByDevice,json=body,headers=None)
         try:
@@ -56,8 +56,8 @@ class deviceContrl:
         :return:
         """
         name = self.deviceName.deviceMid(mid=str(mid))
-        urlGateWay = self.file['url'] + self.file['gatewayPort'] + self.file['gateway']['controlDeviceByGeteway']
-        urlByDevice = self.file['url'] + self.file['devicePort'] + self.file['device']['controlByDevice']
+        urlGateWay = self.jsondata['url'] + self.jsondata['gatewayPort'] + self.jsondata['gateway']['controlDeviceByGeteway']
+        urlByDevice = self.jsondata['url'] + self.jsondata['devicePort'] + self.jsondata['device']['controlByDevice']
         body = {"mid":str(mid), "type":1}
         response = requests.post(url=urlByDevice,json=body,headers=None)
         try:

@@ -19,7 +19,7 @@ class method:
         self.readConfig = readConfig()
         ConfPath = self.readConfig.readConfig("Path","conf_dir")
         File = open(file=ConfPath + "config.json", mode='r', encoding='UTF-8')
-        self.file = json.load(File)
+        self.jsondata = json.load(File)
         self.time_list = []
 
 
@@ -56,9 +56,7 @@ class method:
             wb = openpyxl.load_workbook(self.readConfig.readConfi("Path","file_dir") + fileName)
             sheet_names_list = wb.sheetnames
             for sheet_name in sheet_names_list:
-                if sheet_name == "配置文件":
-                    pass
-                else:
+                if sheet_name != "配置文件":
                     pd = pandas.read_excel(io=self.readConfig.readConfi("Path","file_dir") + fileName, sheet_name=sheet_name,keep_default_na=False)
                     for rows in pd.index.values:
                         d = dict()
@@ -81,12 +79,12 @@ class method:
         :return:
         """
         if str(caseTitle) == "初始队列":
-            self.device.modify(mid=self.file['母管压力变送器'], code=self.file['母管压力参数码'], value='7')
-            enableArray = self.file['enableArray']
+            self.device.modify(mid=self.jsondata['母管压力变送器'], code=self.jsondata['母管压力参数码'], value='7')
+            enableArray = self.jsondata['enableArray']
             enableArrayText = str(enableArray).replace('false', "False")
             enableArrayData = eval(str(enableArrayText))
-            url = self.file['url'] + self.file['gatewayPort'] + self.file['gateway']['modifyByGeteway']
-            body = {"groupId": self.file['groupID'], "jointEnable": False, "enableArray": enableArrayData}
+            url = self.jsondata['url'] + self.jsondata['gatewayPort'] + self.jsondata['gateway']['modifyByGeteway']
+            body = {"groupId": self.jsondata['groupID'], "jointEnable": False, "enableArray": enableArrayData}
             response = requests.post(url=url, json=body, headers=None, verify=False)
             try:
                 text = str(response.text).replace("false", "False").replace("true", "True").replace("null", "None")
@@ -97,15 +95,12 @@ class method:
                 logger.error('所有设备退出智控失败！')
                 logger.warning('返回信息：{}'.format(response.text))
             logger.info('停机所有设备...')
-            devicemid = self.file['devicemid']
+            devicemid = self.jsondata['devicemid']
             for mid in devicemid:
                 self.device.controlByDevice(mid=str(mid),type=6)
                 self.device.controlByDevice(mid=str(mid),type=8)
                 self.deviceContrl.deviceStop(mid=str(mid))
             time.sleep(5)
-        else:
-            pass
-
 
     def deviceSetUp(self,deviceStatus):
         """
@@ -115,9 +110,7 @@ class method:
         """
 
         getMid = method.getDeviceMid(self)
-        if deviceStatus == {}:
-            pass
-        else:
+        if deviceStatus != {}:
             jsonData = eval(str(deviceStatus))
             for state in jsonData.keys():
                 if state == '停机':
@@ -127,8 +120,8 @@ class method:
                         mid = getMid.get(device_type)
                         self.device.controlByDevice(mid=str(mid), type=2)
                         jointEnable_device_list.append({"enable": True, "mid": str(mid)})
-                    gatway_url = self.file['url'] + self.file['gatewayPort'] + self.file['gateway']['modifyByGeteway']
-                    gatwaybodyTrue = {"groupId": self.file['groupID'],"enableArray": jointEnable_device_list}
+                    gatway_url = self.jsondata['url'] + self.jsondata['gatewayPort'] + self.jsondata['gateway']['modifyByGeteway']
+                    gatwaybodyTrue = {"groupId": self.jsondata['groupID'],"enableArray": jointEnable_device_list}
                     r = requests.post(url=gatway_url, json=gatwaybodyTrue, headers=None, verify=False)
                     text = str(r.text).replace("false", "False").replace("true", "True").replace("null", "None")
                     gatway_data = eval(str(text))
@@ -141,8 +134,8 @@ class method:
                         mid = getMid.get(device_type)
                         self.device.controlByDevice(mid=str(mid), type=1)
                         jointEnable_device_list.append({"enable": True, "mid": str(mid)})
-                    gatway_url = self.file['url'] + self.file['gatewayPort'] + self.file['gateway']['modifyByGeteway']
-                    gatwaybodyTrue = {"groupId": self.file['groupID'], "enableArray": jointEnable_device_list}
+                    gatway_url = self.jsondata['url'] + self.jsondata['gatewayPort'] + self.jsondata['gateway']['modifyByGeteway']
+                    gatwaybodyTrue = {"groupId": self.jsondata['groupID'], "enableArray": jointEnable_device_list}
                     r = requests.post(url=gatway_url, json=gatwaybodyTrue, headers=None, verify=False)
                     text = str(r.text).replace("false", "False").replace("true", "True").replace("null", "None")
                     gatway_data = eval(str(text))
@@ -155,8 +148,8 @@ class method:
                         mid = getMid.get(device_type)
                         self.device.controlByDevice(mid=str(mid), type=4)
                         jointEnable_device_list.append({"enable": True, "mid": str(mid)})
-                    gatway_url = self.file['url'] + self.file['gatewayPort'] + self.file['gateway']['modifyByGeteway']
-                    gatwaybodyTrue = {"groupId": self.file['groupID'], "enableArray": jointEnable_device_list}
+                    gatway_url = self.jsondata['url'] + self.jsondata['gatewayPort'] + self.jsondata['gateway']['modifyByGeteway']
+                    gatwaybodyTrue = {"groupId": self.jsondata['groupID'], "enableArray": jointEnable_device_list}
                     r = requests.post(url=gatway_url, json=gatwaybodyTrue, headers=None, verify=False)
                     text = str(r.text).replace("false", "False").replace("true", "True").replace("null", "None")
                     gatway_data = eval(str(text))
@@ -169,8 +162,8 @@ class method:
                         mid = getMid.get(device_type)
                         self.device.controlByDevice(mid=str(mid),type=3)
                         jointEnable_device_list.append({"enable": True, "mid": str(mid)})
-                    gatway_url = self.file['url'] + self.file['gatewayPort'] + self.file['gateway']['modifyByGeteway']
-                    gatwaybodyTrue = {"groupId": self.file['groupID'], "enableArray": jointEnable_device_list}
+                    gatway_url = self.jsondata['url'] + self.jsondata['gatewayPort'] + self.jsondata['gateway']['modifyByGeteway']
+                    gatwaybodyTrue = {"groupId": self.jsondata['groupID'], "enableArray": jointEnable_device_list}
                     r = requests.post(url=gatway_url, json=gatwaybodyTrue, headers=None, verify=False)
                     text = str(r.text).replace("false", "False").replace("true", "True").replace("null", "None")
                     gatway_data = eval(str(text))
@@ -183,8 +176,8 @@ class method:
                         mid = getMid.get(device_type)
                         self.device.controlByDevice(mid=str(mid), type=2)
                         jointEnable_device_list.append({"enable": False, "mid":mid})
-                    gatway_url = self.file['url'] + self.file['gatewayPort'] + self.file['gateway']['modifyByGeteway']
-                    gatwaybodyTrue = {"groupId": self.file['groupID'],"enableArray": jointEnable_device_list}
+                    gatway_url = self.jsondata['url'] + self.jsondata['gatewayPort'] + self.jsondata['gateway']['modifyByGeteway']
+                    gatwaybodyTrue = {"groupId": self.jsondata['groupID'],"enableArray": jointEnable_device_list}
                     r = requests.post(url=gatway_url, json=gatwaybodyTrue, headers=None, verify=False)
                     text = str(r.text).replace("false", "False").replace("true", "True").replace("null", "None")
                     gatway_data = eval(str(text))
@@ -197,8 +190,8 @@ class method:
                         mid = getMid.get(device_type)
                         self.device.controlByDevice(mid=str(mid), type=1)
                         jointEnable_device_list.append({"enable": False, "mid":mid})
-                    gatway_url = self.file['url'] + self.file['gatewayPort'] + self.file['gateway']['modifyByGeteway']
-                    gatwaybodyTrue = {"groupId": self.file['groupID'],"enableArray": jointEnable_device_list}
+                    gatway_url = self.jsondata['url'] + self.jsondata['gatewayPort'] + self.jsondata['gateway']['modifyByGeteway']
+                    gatwaybodyTrue = {"groupId": self.jsondata['groupID'],"enableArray": jointEnable_device_list}
                     r = requests.post(url=gatway_url, json=gatwaybodyTrue, headers=None, verify=False)
                     text = str(r.text).replace("false", "False").replace("true", "True").replace("null", "None")
                     gatway_data = eval(str(text))
@@ -211,15 +204,13 @@ class method:
         :param gatwaySetUp:
         :return:
         """
-        if gatwayStatus == {}:
-            pass
-        else:
+        if gatwayStatus != {}:
             GatwayData = eval(str(gatwayStatus))
-            gatway_url = self.file['url'] + self.file['gatewayPort'] + self.file['gateway']['modifyByGeteway']
+            gatway_url = self.jsondata['url'] + self.jsondata['gatewayPort'] + self.jsondata['gateway']['modifyByGeteway']
             jointEnable = GatwayData.get('智控状态')
             if str(jointEnable) == "开启":
                 gatwaybodyTrue = {
-                    "groupId": self.file['groupID'],
+                    "groupId": self.jsondata['groupID'],
                     "jointEnable": True,
                     "upLimitPress": GatwayData.get('母管上限压力'),
                     "endPress": GatwayData.get('母管下限压力'),
@@ -240,7 +231,7 @@ class method:
                     logger.warning('返回信息：{}'.format(r.text))
             elif str(jointEnable) == "关闭":
                 gatwaybodyFalse = {
-                    "groupId": self.file['groupID'],
+                    "groupId": self.jsondata['groupID'],
                     "jointEnable": False,
                     "upLimitPress": GatwayData.get('母管上限压力'),
                     "endPress": GatwayData.get('母管下限压力'),
@@ -278,16 +269,14 @@ class method:
         :return:
         """
         getMid = method.getDeviceMid(self)
-        if Setpe == {}:
-            pass
-        else:
+        if Setpe != {}:
             setpes = eval(str(Setpe))
             for setpe in setpes.keys():
                 if setpe == "智控状态":
                     join_state = setpes.get(setpe)
                     if str(join_state) == "开启":
-                        gatway_url = self.file['url'] + self.file['gatewayPort'] + self.file['gateway']['modifyByGeteway']
-                        gatwaybody = {"groupId": self.file['groupID'], "jointEnable": True}
+                        gatway_url = self.jsondata['url'] + self.jsondata['gatewayPort'] + self.jsondata['gateway']['modifyByGeteway']
+                        gatwaybody = {"groupId": self.jsondata['groupID'], "jointEnable": True}
                         r = requests.post(url=gatway_url, json=gatwaybody, headers=None, verify=False)
                         text = str(r.text).replace("false", "False").replace("true", "True").replace("null", "None")
                         gatway_data = eval(str(text))
@@ -301,8 +290,8 @@ class method:
                             break
 
                     if str(join_state) == "关闭":
-                        gatway_url = self.file['url'] + self.file['gatewayPort'] + self.file['gateway']['modifyByGeteway']
-                        gatwaybody = {"groupId": self.file['groupID'], "jointEnable": False}
+                        gatway_url = self.jsondata['url'] + self.jsondata['gatewayPort'] + self.jsondata['gateway']['modifyByGeteway']
+                        gatwaybody = {"groupId": self.jsondata['groupID'], "jointEnable": False}
                         r = requests.post(url=gatway_url, json=gatwaybody, headers=None, verify=False)
                         text = str(r.text).replace("false", "False").replace("true", "True").replace("null", "None")
                         gatway_data = json.loads(str(text))
@@ -316,7 +305,7 @@ class method:
                             break
 
                 if setpe == "母管压力":
-                    self.device.modify(mid=self.file["母管压力变送器"],code=self.file["母管压力参数码"],value=str(setpes.get(setpe)))
+                    self.device.modify(mid=self.jsondata["母管压力变送器"],code=self.jsondata["母管压力参数码"],value=str(setpes.get(setpe)))
 
                 if setpe == "等待时间":
                     excel_wait_time = setpes.get(str(setpe))
@@ -421,8 +410,8 @@ class method:
                                 mid = getMid.get(str(device_name))
                                 enableArray = []
                                 enableArray.append({"enable": False, "mid": str(mid)})
-                                gatway_url = self.file['url'] + self.file['gatewayPort'] + self.file['gateway']['modifyByGeteway']
-                                gatway_body = {"groupId": self.file['groupID'],"enableArray": enableArray}
+                                gatway_url = self.jsondata['url'] + self.jsondata['gatewayPort'] + self.jsondata['gateway']['modifyByGeteway']
+                                gatway_body = {"groupId": self.jsondata['groupID'],"enableArray": enableArray}
                                 r = requests.post(url=gatway_url, json=gatway_body, headers=None, verify=False)
                                 name = self.deviceName.deviceMid(mid=str(mid))
                                 try:
@@ -443,8 +432,8 @@ class method:
                                 mid = getMid.get(str(device_name))
                                 enableArray = []
                                 enableArray.append({"enable": True, "mid": str(mid)})
-                                gatway_url = self.file['url'] + self.file['gatewayPort'] + self.file['gateway']['modifyByGeteway']
-                                gatway_body = {"groupId": self.file['groupID'],"enableArray": enableArray}
+                                gatway_url = self.jsondata['url'] + self.jsondata['gatewayPort'] + self.jsondata['gateway']['modifyByGeteway']
+                                gatway_body = {"groupId": self.jsondata['groupID'],"enableArray": enableArray}
                                 r = requests.post(url=gatway_url, json=gatway_body, headers=None, verify=False)
                                 name = self.deviceName.deviceMid(mid=str(mid))
                                 try:
@@ -498,9 +487,7 @@ class method:
         :param queue_info:
         :return:
         """
-        if queue_info == {}:
-            pass
-        else:
+        if queue_info != {}:
             queue = self.gateway.getQueue(device_type=1)
             readyqueueList = []
             runqueueList = []
@@ -512,8 +499,10 @@ class method:
             runqueue_2 = []
             runqueue_3 = []
             runqueue_4 = []
-            Queue = {"待机队列":{"1":readyqueuelist_1,"2":readyqueuelist_2,"3":readyqueuelist_3,"4":readyqueuelist_4},
-                     "运行队列":{"1":runqueue_1,"2":runqueue_2,"3":runqueue_3,"4":runqueue_4}}
+            Queue = {
+                "待机队列":{"1":readyqueuelist_1,"2":readyqueuelist_2,"3":readyqueuelist_3,"4":readyqueuelist_4},
+                "运行队列":{"1":runqueue_1,"2":runqueue_2,"3":runqueue_3,"4":runqueue_4}
+            }
             try:
                 ready__Queue = queue['readyQueue']
                 excel_device_mid = method.getDeviceMid(self)
@@ -545,9 +534,7 @@ class method:
             l3 = []
             l4 = []
             for device in Queue['待机队列'].values():
-                if device == []:
-                    pass
-                else:
+                if device != []:
                     key = method.getKeys(self,d=Queue['待机队列'], value=device)
                     l3.append(key[0])
                     l4.append(device)
@@ -583,9 +570,7 @@ class method:
             l1 = []
             l2 = []
             for device in Queue['运行队列'].values():
-                if device == []:
-                    pass
-                else:
+                if device != []:
                     key = method.getKeys(self,d=Queue['运行队列'], value=device)
                     l1.append(key[0])
                     l2.append(device)
