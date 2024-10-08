@@ -6,7 +6,7 @@ class deviceName:
     def __init__(self):
         pass
 
-    def deviceMid(self,mid):
+    def get_device_name(self,mid):
         """
         根据mid返回对应设备名称
         :param mid:
@@ -42,7 +42,7 @@ class deviceName:
             return '60#流量计'
 
 
-    def protocolCode(self,code):
+    def get_protocol_code(self,code):
         """
         根据code返回对应参数名称
         :param code:

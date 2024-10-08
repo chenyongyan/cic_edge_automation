@@ -16,14 +16,14 @@ class device:
         self.jsondata = json.load(File)
 
 
-    def controlByDevice(self,mid,type):
+    def controler_device(self,mid,type):
         """
         设备控制
         :param mid:
         :param type: 1：启动，2：停机，3：加载，4：卸载，5：锁定，6：解锁，7：离线，8：在线
         :return:
         """
-        name = self.deviceName.deviceMid(mid=str(mid))
+        name = self.deviceName.get_device_name(mid=str(mid))
         url = self.jsondata['url'] + self.jsondata['devicePort'] + self.jsondata['device']['controlByDevice']
         body = {"mid":str(mid),"type":type}
         response = requests.post(url=url,json=body,headers=None,verify=False)
@@ -85,7 +85,7 @@ class device:
                 logger.warning('返回信息：{}'.format(response.text))
 
 
-    def modify(self,mid,code,value):
+    def modify_device(self,mid,code,value):
         """
         修改设备临时参数
         busPressureBar: 母管压力
@@ -96,8 +96,8 @@ class device:
         :param value:
         :return:
         """
-        name = self.deviceName.deviceMid(mid=str(mid))
-        pressure = self.deviceName.protocolCode(code=str(code))
+        name = self.deviceName.get_device_name(mid=str(mid))
+        pressure = self.deviceName.get_protocol_code(code=str(code))
         url = self.jsondata['url'] + self.jsondata['devicePort'] + self.jsondata['device']['modify']
         body = {"mid":str(mid),"code":str(code),"value":value}
         response = requests.post(url=url,json=body,headers=None,verify=False)
@@ -114,15 +114,15 @@ class device:
             logger.warning('返回信息：{}'.format(response.text))
 
 
-    def getDeviceDataByDevice(self,mid,code):
+    def get_device_info(self,mid,code):
         """
         设备信息查询
         :param mid:
         :param code: 协议参数码
         :return:
         """
-        name = self.deviceName.deviceMid(mid=str(mid))
-        pressure = self.deviceName.protocolCode(code=str(code))
+        name = self.deviceName.get_device_name(mid=str(mid))
+        pressure = self.deviceName.get_protocol_code(code=str(code))
         url = self.jsondata['url'] + self.jsondata['devicePort'] + self.jsondata['device']['getDeviceDataByDevice']
         body = {"mid":str(mid),"code":str(code)}
         response = requests.post(url=url,json=body,headers=None,verify=False)
@@ -138,7 +138,7 @@ class device:
             logger.warning('返回信息：{}'.format(response.text))
 
 
-    def deviceRestart(self,status):
+    def restart_analog_device(self,status):
         """
         重启边缘模拟器
         :param type_restart: 0:关闭,1:重启
@@ -167,18 +167,18 @@ class device:
                 logger.warning('返回信息：{}'.format(response.text))
 
 
-    def unlockedDevice(self,mid):
+    def unlock_device(self,mid):
         """
         解锁设备
         :param mid:
         :return:
         """
-        equepment = self.deviceName.deviceMid(mid=str(mid))
-        device.controlByDevice(mid=str(mid),type=6)
-        enableArray = [{"enable":False,"mid":str(mid)}]
+        equepment = self.deviceName.get_device_name(mid=str(mid))
+        self.controler_device(mid=str(mid), type=6)
+        enableArray = [{"enable":False, "mid":str(mid)}]
         url = self.jsondata['url'] + self.jsondata['gatewayPort'] + self.jsondata['gateway']['modifyByGeteway']
         body = {"groupId":self.jsondata['groupID'],"enableArray": enableArray}
-        response = requests.post(url=url,json=body,headers=None,verify=False)
+        response = requests.post(url=url, json=body, headers=None, verify=False)
         try:
             text = str(response.text).replace("false", "False").replace("true", "True").replace("null", "None")
             jsonData = json.loads(str(text))
@@ -188,7 +188,9 @@ class device:
             logger.info('{}退出智控失败！'.format(equepment))
             logger.warning('请求报文：{}'.format(body))
             logger.warning('返回信息：{}'.format(response.text))
-        enable = [{"enable":True,"mid": str(mid)}]
+            return
+
+        enable = [{"enable": True,"mid": str(mid)}]
         urlJoin = self.jsondata['url'] + self.jsondata['gatewayPort'] + self.jsondata['gateway']['modifyByGeteway']
         bodyJoin = {"groupId":self.jsondata['groupID'],"enableArray": enable}
         responseJoin = requests.post(url=urlJoin, json=bodyJoin, headers=None, verify=False)

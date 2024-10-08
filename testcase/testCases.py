@@ -3,7 +3,7 @@
 import unittest,json
 import os,openpyxl,pandas
 from public.myddt import ddt,data,unpack
-from public.method import method
+from public.util import util
 from public.readConfig import readConfig
 
 @ddt
@@ -11,14 +11,14 @@ class case(unittest.TestCase):
 
     def setUp(self):
         self.readConfig = readConfig()
-        self.method = method()
+        self.util = util()
         ConfPath = self.readConfig.readConfig("Path", "conf_dir")
         File = open(file=ConfPath + "config.json", mode='r', encoding='UTF-8')
         self.file = json.load(File)
         self.key_list = []
 
 
-    def testGetValues_01(self):
+    def test_get_values_01(self):
         """
         返回数据表格值
         :param :
@@ -47,10 +47,8 @@ class case(unittest.TestCase):
             wb = openpyxl.load_workbook(self.readConfig.readConfi("Path","file_dir") + fileName)
             sheet_names_list = wb.sheetnames
             for sheet_name in sheet_names_list:
-                if sheet_name == "配置文件":
-                    pass
-                else:
-                    pd = pandas.read_excel(io=self.readConfig.readConfi("Path","file_dir") + fileName, sheet_name=sheet_name,keep_default_na=False)
+                if sheet_name != "配置文件":
+                    pd = pandas.read_excel(io=self.readConfig.readConfi("Path","file_dir") + fileName, sheet_name=sheet_name, keep_default_na=False)
                     for rows in pd.index.values:
                         d = dict()
                         # 用例编号
@@ -113,24 +111,24 @@ class case(unittest.TestCase):
         return self.key_list
 
 
-    @data(*testGetValues_01())
+    @data(*test_get_values_01())
     @unpack
-    def testCase_02(self,ID,Title,deviceSetUp,gatwaySetUp,Setpe,Queue):
+    def test_start_02(self, ID, Title, deviceSetUp, gatwaySetUp, Setpe, Queue):
 
         # 网关智控初始化
-        self.method.testSetUp(caseTitle=Title)
+        self.util.test_setup(caseTitle=Title)
 
         # 设备条件初始化
-        self.method.deviceSetUp(deviceStatus=deviceSetUp)
+        self.util.device_setup(deviceStatus=deviceSetUp)
 
         # 网关条件初始化
-        self.method.gatwaySetUp(gatwayStatus=gatwaySetUp)
+        self.util.gatway_setup(gatwayStatus=gatwaySetUp)
 
         # 用例执行操作步骤
-        self.method.testSetpe(Setpe=Setpe, Title=Title)
+        self.util.test_setpe(Setpe=Setpe, Title=Title)
 
         # 用例断言
-        self.method.getGatwayQueueAssert(test_id=ID, queue_info=Queue)
+        self.util.get_gatway_queue_assert(test_id=ID, queue_info=Queue)
 
 
 if __name__=="__main__":

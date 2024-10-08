@@ -6,7 +6,7 @@ from public.deviceName import deviceName
 from public.readConfig import readConfig
 
 
-class gateway:
+class gatewayContrler:
 
     def __init__(self):
         self.deviceName = deviceName()
@@ -15,15 +15,14 @@ class gateway:
         File = open(file=ConfPath + "config.json", mode='r', encoding='UTF-8')
         self.jsondata = json.load(File)
 
-
-    def controlDeviceByGeteway(self,mid,type):
+    def controler_device_by_geteway(self, mid, type):
         """
         设备控制
         :param mid:
         :param type: 控制类型 1：启动，2：停机，3：加载，4：加载
         :return:
         """
-        name = self.deviceName.deviceMid(mid=str(mid))
+        name = self.deviceName.get_device_name(mid=str(mid))
         url = self.jsondata['url'] + self.jsondata['gatewayPort'] + self.jsondata['gateway']['controlDeviceByGeteway']
         body = {"mid":str(mid),"type":type}
         response = requests.post(url=url,json=body,headers=None)
@@ -86,8 +85,7 @@ class gateway:
                 logger.warning('请求报文：{}'.format(body))
                 logger.warning('返回信息：{}'.format(response.text))
 
-
-    def getDeviceDataByGeteway(self,mid):
+    def get_device_info_by_geteway(self, mid):
         """
         设备数据查询(对应的数据查看设备对应协议)
         :param mid:
@@ -95,7 +93,7 @@ class gateway:
         """
         url = self.jsondata['url'] + self.jsondata['gatewayPort'] + self.jsondata['gateway']['getDeviceDataByGeteway']
         body = {"mid":str(mid),"code":""}
-        response = requests.post(url=url,json=body,headers=None,verify=False)
+        response = requests.post(url=url, json=body, headers=None, verify=False)
         try:
             text = str(response.text).replace("false", "False").replace("true", "True").replace("null", "None")
             jsonData = json.loads(str(text))
@@ -106,8 +104,7 @@ class gateway:
             logger.warning('请求报文：{}'.format(body))
             logger.warning('返回信息：{}'.format(response.text))
 
-
-    def getGateWayData(self):
+    def get_gateway_info(self):
         """
         网关系统数据查询,参数设置页面所有参数
         :return:
@@ -133,8 +130,7 @@ class gateway:
             logger.warning('请求报文：{}'.format(body))
             logger.warning('返回信息：{}'.format(response.text))
 
-
-    def getQueue(self,device_type):
+    def get_queue(self, device_type):
         """
         智控队列详情
         :param device_type: 队列类型，1：空压机算法，2：干燥机算法
@@ -162,8 +158,7 @@ class gateway:
                 logger.warning('请求报文：{}'.format(body))
                 logger.warning('返回信息：{}'.format(response.text))
 
-
-    def sendProtocol(self,version):
+    def update_protocol(self, version):
         """
         更新配置文件
         :param version: 版本号,version不传时,默认更到当前同步版本, 更新成功后网关程序自动重启
@@ -184,8 +179,7 @@ class gateway:
             logger.warning('请求报文：{}'.format(body))
             logger.warning('返回信息：{}'.format(response.text))
 
-
-    def modifyGeteway(self,jointEnable,upLimitPress,endPress,startInterval,stopInterval,enableArray):
+    def modify_geteway(self,jointEnable,upLimitPress,endPress,startInterval,stopInterval,enableArray):
         """
         网关系统参数修改
         :param jointEnable: 系统智控状态

@@ -6,7 +6,7 @@ from public.deviceName import deviceName
 from public.readConfig import readConfig
 
 
-class deviceContrl:
+class deviceContrler:
 
     def __init__(self):
         self.readConfig = readConfig()
@@ -16,13 +16,13 @@ class deviceContrl:
         self.jsondata = json.load(File)
 
 
-    def deviceStop(self,mid):
+    def device_stop(self,mid):
         """
         单设备关机
         :param mid:
         :return:
         """
-        name = self.deviceName.deviceMid(mid=str(mid))
+        name = self.deviceName.get_device_name(mid=str(mid))
         urlGateWay = self.jsondata['url'] + self.jsondata['gatewayPort'] + self.jsondata['gateway']['controlDeviceByGeteway']
         urlByDevice = self.jsondata['url'] + self.jsondata['devicePort'] + self.jsondata['device']['controlByDevice']
         body = {"mid":str(mid), "type":2}
@@ -49,13 +49,13 @@ class deviceContrl:
                 logger.warning('返回信息：{}'.format(responseGateway.text))
 
 
-    def deviceRun(self,mid):
+    def device_start(self,mid):
         """
         单设备开机
         :param mid:
         :return:
         """
-        name = self.deviceName.deviceMid(mid=str(mid))
+        name = self.deviceName.get_device_name(mid=str(mid))
         urlGateWay = self.jsondata['url'] + self.jsondata['gatewayPort'] + self.jsondata['gateway']['controlDeviceByGeteway']
         urlByDevice = self.jsondata['url'] + self.jsondata['devicePort'] + self.jsondata['device']['controlByDevice']
         body = {"mid":str(mid), "type":1}

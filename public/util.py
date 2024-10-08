@@ -4,18 +4,18 @@ import pandas,json,os,openpyxl,requests,time
 from loguru import logger
 from public.device import device
 from public.deviceName import deviceName
-from public.gateway import gateway
-from public.deviceContrl import deviceContrl
+from public.gatewayContrler import gatewayContrler
+from public.deviceContrler import deviceContrler
 from public.readConfig import readConfig
 
 
-class method:
+class util:
 
     def __init__(self):
         self.device = device()
         self.deviceName = deviceName()
-        self.gateway = gateway()
-        self.deviceContrl = deviceContrl()
+        self.gatewayContrler = gatewayContrler()
+        self.deviceContrler = deviceContrler()
         self.readConfig = readConfig()
         ConfPath = self.readConfig.readConfig("Path","conf_dir")
         File = open(file=ConfPath + "config.json", mode='r', encoding='UTF-8')
@@ -23,7 +23,7 @@ class method:
         self.time_list = []
 
 
-    def getKeys(self,d,value):
+    def get_key(self,d,value):
         """
         通过字典中的value获取key返回list
         :param d:
@@ -34,7 +34,7 @@ class method:
         return key
 
 
-    def getDeviceMid(self):
+    def get_device_mid(self):
         """
         获取数据表格测试设备mid
         :param :
@@ -66,20 +66,17 @@ class method:
                         list_mid.append(textTestDevice)
                         str_mid = str(list_mid).replace("['","{").replace("']","}")
                         TestDevice = eval(str(str_mid))
-                        if TestDevice == {}:
-                            pass
-                        else:
-                            return TestDevice
+                        return TestDevice
 
 
-    def testSetUp(self,caseTitle):
+    def test_setup(self, caseTitle):
         """
         测试初始化
         :param test_title:
         :return:
         """
         if str(caseTitle) == "初始队列":
-            self.device.modify(mid=self.jsondata['母管压力变送器'], code=self.jsondata['母管压力参数码'], value='7')
+            self.device.modify_device(mid=self.jsondata['母管压力变送器'], code=self.jsondata['母管压力参数码'], value='7')
             enableArray = self.jsondata['enableArray']
             enableArrayText = str(enableArray).replace('false', "False")
             enableArrayData = eval(str(enableArrayText))
@@ -97,19 +94,18 @@ class method:
             logger.info('停机所有设备...')
             devicemid = self.jsondata['devicemid']
             for mid in devicemid:
-                self.device.controlByDevice(mid=str(mid),type=6)
-                self.device.controlByDevice(mid=str(mid),type=8)
-                self.deviceContrl.deviceStop(mid=str(mid))
+                self.device.controler_device(mid=str(mid),type=6)
+                self.device.controler_device(mid=str(mid),type=8)
+                self.deviceContrler.device_stop(mid=str(mid))
             time.sleep(5)
 
-    def deviceSetUp(self,deviceStatus):
+    def device_setup(self, deviceStatus):
         """
         设备条件
-        :param deviceSetUp:
+        :param deviceStatus:
         :return:
         """
-
-        getMid = method.getDeviceMid(self)
+        device_mid = self.get_device_mid()
         if deviceStatus != {}:
             jsonData = eval(str(deviceStatus))
             for state in jsonData.keys():
@@ -117,8 +113,8 @@ class method:
                     get_device_type = jsonData.get('停机')
                     jointEnable_device_list = []
                     for device_type in get_device_type:
-                        mid = getMid.get(device_type)
-                        self.device.controlByDevice(mid=str(mid), type=2)
+                        mid = device_mid.get(device_type)
+                        self.device.controler_device(mid=str(mid), type=2)
                         jointEnable_device_list.append({"enable": True, "mid": str(mid)})
                     gatway_url = self.jsondata['url'] + self.jsondata['gatewayPort'] + self.jsondata['gateway']['modifyByGeteway']
                     gatwaybodyTrue = {"groupId": self.jsondata['groupID'],"enableArray": jointEnable_device_list}
@@ -131,8 +127,8 @@ class method:
                     get_device_type = jsonData.get('运行')
                     jointEnable_device_list = []
                     for device_type in get_device_type:
-                        mid = getMid.get(device_type)
-                        self.device.controlByDevice(mid=str(mid), type=1)
+                        mid = device_mid.get(device_type)
+                        self.device.controler_device(mid=str(mid), type=1)
                         jointEnable_device_list.append({"enable": True, "mid": str(mid)})
                     gatway_url = self.jsondata['url'] + self.jsondata['gatewayPort'] + self.jsondata['gateway']['modifyByGeteway']
                     gatwaybodyTrue = {"groupId": self.jsondata['groupID'], "enableArray": jointEnable_device_list}
@@ -145,8 +141,8 @@ class method:
                     get_device_type = jsonData.get('卸载')
                     jointEnable_device_list = []
                     for device_type in get_device_type:
-                        mid = getMid.get(device_type)
-                        self.device.controlByDevice(mid=str(mid), type=4)
+                        mid = device_mid.get(device_type)
+                        self.device.controler_device(mid=str(mid), type=4)
                         jointEnable_device_list.append({"enable": True, "mid": str(mid)})
                     gatway_url = self.jsondata['url'] + self.jsondata['gatewayPort'] + self.jsondata['gateway']['modifyByGeteway']
                     gatwaybodyTrue = {"groupId": self.jsondata['groupID'], "enableArray": jointEnable_device_list}
@@ -159,8 +155,8 @@ class method:
                     get_device_type = jsonData.get('加载')
                     jointEnable_device_list = []
                     for device_type in get_device_type:
-                        mid = getMid.get(device_type)
-                        self.device.controlByDevice(mid=str(mid),type=3)
+                        mid = device_mid.get(device_type)
+                        self.device.controler_device(mid=str(mid),type=3)
                         jointEnable_device_list.append({"enable": True, "mid": str(mid)})
                     gatway_url = self.jsondata['url'] + self.jsondata['gatewayPort'] + self.jsondata['gateway']['modifyByGeteway']
                     gatwaybodyTrue = {"groupId": self.jsondata['groupID'], "enableArray": jointEnable_device_list}
@@ -173,8 +169,8 @@ class method:
                     get_device_type = jsonData.get('非智控停机')
                     jointEnable_device_list = []
                     for device_type in get_device_type:
-                        mid = getMid.get(device_type)
-                        self.device.controlByDevice(mid=str(mid), type=2)
+                        mid = device_mid.get(device_type)
+                        self.device.controler_device(mid=str(mid), type=2)
                         jointEnable_device_list.append({"enable": False, "mid":mid})
                     gatway_url = self.jsondata['url'] + self.jsondata['gatewayPort'] + self.jsondata['gateway']['modifyByGeteway']
                     gatwaybodyTrue = {"groupId": self.jsondata['groupID'],"enableArray": jointEnable_device_list}
@@ -187,8 +183,8 @@ class method:
                     get_device_type = jsonData.get('非智控运行')
                     jointEnable_device_list = []
                     for device_type in get_device_type:
-                        mid = getMid.get(device_type)
-                        self.device.controlByDevice(mid=str(mid), type=1)
+                        mid = device_mid.get(device_type)
+                        self.device.controler_device(mid=str(mid), type=1)
                         jointEnable_device_list.append({"enable": False, "mid":mid})
                     gatway_url = self.jsondata['url'] + self.jsondata['gatewayPort'] + self.jsondata['gateway']['modifyByGeteway']
                     gatwaybodyTrue = {"groupId": self.jsondata['groupID'],"enableArray": jointEnable_device_list}
@@ -198,26 +194,26 @@ class method:
                     assert gatway_data['ret'] == 1
 
 
-    def gatwaySetUp(self,gatwayStatus):
+    def gatway_setup(self, gatwayStatus):
         """
         网关初始化
-        :param gatwaySetUp:
+        :param gatwayStatus:
         :return:
         """
         if gatwayStatus != {}:
-            GatwayData = eval(str(gatwayStatus))
+            gatway_info = eval(str(gatwayStatus))
             gatway_url = self.jsondata['url'] + self.jsondata['gatewayPort'] + self.jsondata['gateway']['modifyByGeteway']
-            jointEnable = GatwayData.get('智控状态')
+            jointEnable = gatway_info.get('智控状态')
             if str(jointEnable) == "开启":
                 gatwaybodyTrue = {
                     "groupId": self.jsondata['groupID'],
                     "jointEnable": True,
-                    "upLimitPress": GatwayData.get('母管上限压力'),
-                    "endPress": GatwayData.get('母管下限压力'),
+                    "upLimitPress": gatway_info.get('母管上限压力'),
+                    "endPress": gatway_info.get('母管下限压力'),
                     "pressDrop": "",
                     "safePress": "",
-                    "startInterval": GatwayData.get('启动时间间隔'),
-                    "stopInterval": GatwayData.get('停机时间间隔')
+                    "startInterval": gatway_info.get('启动时间间隔'),
+                    "stopInterval": gatway_info.get('停机时间间隔')
                 }
                 r = requests.post(url=gatway_url, json=gatwaybodyTrue, headers=None, verify=False)
                 try:
@@ -233,12 +229,12 @@ class method:
                 gatwaybodyFalse = {
                     "groupId": self.jsondata['groupID'],
                     "jointEnable": False,
-                    "upLimitPress": GatwayData.get('母管上限压力'),
-                    "endPress": GatwayData.get('母管下限压力'),
+                    "upLimitPress": gatway_info.get('母管上限压力'),
+                    "endPress": gatway_info.get('母管下限压力'),
                     "pressDrop": "",
                     "safePress": "",
-                    "startInterval": GatwayData.get('启动时间间隔'),
-                    "stopInterval": GatwayData.get('停机时间间隔')
+                    "startInterval": gatway_info.get('启动时间间隔'),
+                    "stopInterval": gatway_info.get('停机时间间隔')
                 }
                 r = requests.post(url=gatway_url, json=gatwaybodyFalse, headers=None, verify=False)
                 try:
@@ -251,24 +247,24 @@ class method:
                     logger.error('请求报文：{}'.format(gatwaybodyFalse))
                     logger.warning('返回信息：{}'.format(r.text))
 
-            for val in GatwayData.keys():
+            for val in gatway_info.keys():
                 if val == str('瞬时流量'):
-                    Instantaneous_flow = GatwayData.get(str(val))
-                    self.device.modify(mid='1020070060',code='Instantaneous_flow',value=str(Instantaneous_flow))
+                    Instantaneous_flow = gatway_info.get(str(val))
+                    self.device.modify_device(mid='1020070060', code='Instantaneous_flow', value=str(Instantaneous_flow))
 
                 if val == str('累计流量'):
-                    TOTAL = GatwayData.get(str(val))
-                    self.device.modify(mid='1020070060',code='TOTAL',value=str(TOTAL))
+                    TOTAL = gatway_info.get(str(val))
+                    self.device.modify_device(mid='1020070060', code='TOTAL', value=str(TOTAL))
 
 
-    def testSetpe(self,Setpe,Title):
+    def test_setpe(self, Setpe, Title):
         """
         操作步骤
         :param Setpe:
         :param Title:
         :return:
         """
-        getMid = method.getDeviceMid(self)
+        device_mid = util.get_device_mid(self)
         if Setpe != {}:
             setpes = eval(str(Setpe))
             for setpe in setpes.keys():
@@ -305,7 +301,7 @@ class method:
                             break
 
                 if setpe == "母管压力":
-                    self.device.modify(mid=self.jsondata["母管压力变送器"],code=self.jsondata["母管压力参数码"],value=str(setpes.get(setpe)))
+                    self.device.modify_device(mid=self.jsondata["母管压力变送器"],code=self.jsondata["母管压力参数码"],value=str(setpes.get(setpe)))
 
                 if setpe == "等待时间":
                     excel_wait_time = setpes.get(str(setpe))
@@ -341,79 +337,79 @@ class method:
                 if setpe == "在线设备":
                     online_device_list = setpes.get(setpe)
                     for online_device in online_device_list:
-                        for device_name in getMid.keys():
+                        for device_name in device_mid.keys():
                             if str(online_device) == str(device_name):
-                                mid = getMid.get(str(device_name))
-                                self.device.controlByDevice(mid=str(mid), type=8)
+                                mid = device_mid.get(str(device_name))
+                                self.device.controler_device(mid=str(mid), type=8)
 
                 if setpe == "模拟器停机":
                     stop_device_list = setpes.get(setpe)
                     for stop_device in stop_device_list:
-                        for device_name in getMid.keys():
+                        for device_name in device_mid.keys():
                             if str(stop_device) == str(device_name):
-                                mid = getMid.get(str(device_name))
-                                self.device.controlByDevice(mid=str(mid), type=2)
+                                mid = device_mid.get(str(device_name))
+                                self.device.controler_device(mid=str(mid), type=2)
 
                 if setpe == "模拟器运行":
                     run_device_list = setpes.get(setpe)
                     for run_device in run_device_list:
-                        for device_name in getMid.keys():
+                        for device_name in device_mid.keys():
                             if str(run_device) == str(device_name):
-                                mid = getMid.get(str(device_name))
-                                self.device.controlByDevice(mid=str(mid), type=1)
+                                mid = device_mid.get(str(device_name))
+                                self.device.controler_device(mid=str(mid), type=1)
 
                 if setpe == "网关运行":
                     run_device_list = setpes.get(setpe)
                     for run_device in run_device_list:
-                        for device_name in getMid.keys():
+                        for device_name in device_mid.keys():
                             if str(run_device) == str(device_name):
-                                mid = getMid.get(str(device_name))
-                                self.gateway.controlDeviceByGeteway(mid=str(mid),type=1)
+                                mid = device_mid.get(str(device_name))
+                                self.gatewayContrler.controlDeviceByGeteway(mid=str(mid),type=1)
 
                 if setpe == "网关停机":
                     run_device_list = setpes.get(setpe)
                     for run_device in run_device_list:
-                        for device_name in getMid.keys():
+                        for device_name in device_mid.keys():
                             if str(run_device) == str(device_name):
-                                mid = getMid.get(str(device_name))
-                                self.gateway.controlDeviceByGeteway(mid=str(mid), type=2)
+                                mid = device_mid.get(str(device_name))
+                                self.gatewayContrler.controlDeviceByGeteway(mid=str(mid), type=2)
 
                 if setpe == "离线设备":
                     offline_device_list = setpes.get(setpe)
                     for offline_device in offline_device_list:
-                        for device_name in getMid.keys():
+                        for device_name in device_mid.keys():
                             if str(offline_device) == str(device_name):
-                                mid = getMid.get(str(device_name))
-                                self.device.controlByDevice(mid=str(mid), type=7)
+                                mid = device_mid.get(str(device_name))
+                                self.device.controler_device(mid=str(mid), type=7)
 
                 if setpe == "锁定设备":
                     lock_device_list = setpes.get(setpe)
                     for lock_device in lock_device_list:
-                        for device_name in getMid.keys():
+                        for device_name in device_mid.keys():
                             if str(device_name) == str(lock_device):
-                                mid = getMid.get(str(device_name))
-                                self.device.controlByDevice(mid=str(mid), type=5)
+                                mid = device_mid.get(str(device_name))
+                                self.device.controler_device(mid=str(mid), type=5)
 
                 if setpe == "解锁设备":
                     unlock_device_list = setpes.get(setpe)
                     for unlock_device in unlock_device_list:
-                        for device_name in getMid.keys():
+                        for device_name in device_mid.keys():
                             if str(device_name) == str(unlock_device):
-                                mid = getMid.get(str(unlock_device))
-                                self.device.controlByDevice(mid=str(mid), type=6)
+                                mid = device_mid.get(str(unlock_device))
+                                self.device.controler_device(mid=str(mid), type=6)
 
                 if setpe == "退出智控":
                     unJoin_device_list = setpes.get(setpe)
                     for unJoin_device in unJoin_device_list:
-                        for device_name in getMid.keys():
+                        for device_name in device_mid.keys():
                             if str(unJoin_device) == str(device_name):
-                                mid = getMid.get(str(device_name))
+                                mid = device_mid.get(str(device_name))
                                 enableArray = []
                                 enableArray.append({"enable": False, "mid": str(mid)})
                                 gatway_url = self.jsondata['url'] + self.jsondata['gatewayPort'] + self.jsondata['gateway']['modifyByGeteway']
                                 gatway_body = {"groupId": self.jsondata['groupID'],"enableArray": enableArray}
                                 r = requests.post(url=gatway_url, json=gatway_body, headers=None, verify=False)
-                                name = self.deviceName.deviceMid(mid=str(mid))
+                                name = self.deviceName.get_device_name(mid=str(mid))
                                 try:
                                     text = str(r.text).replace("false","False").replace("true","True").replace("null","None")
                                     gatway_data = json.loads(str(text))
@@ -427,15 +423,15 @@ class method:
                 if setpe == "加入智控":
                     join_device_list = setpes.get(setpe)
                     for join_device in join_device_list:
-                        for device_name in getMid.keys():
+                        for device_name in device_mid.keys():
                             if str(join_device) == str(device_name):
-                                mid = getMid.get(str(device_name))
+                                mid = device_mid.get(str(device_name))
                                 enableArray = []
                                 enableArray.append({"enable": True, "mid": str(mid)})
                                 gatway_url = self.jsondata['url'] + self.jsondata['gatewayPort'] + self.jsondata['gateway']['modifyByGeteway']
                                 gatway_body = {"groupId": self.jsondata['groupID'],"enableArray": enableArray}
                                 r = requests.post(url=gatway_url, json=gatway_body, headers=None, verify=False)
-                                name = self.deviceName.deviceMid(mid=str(mid))
+                                name = self.deviceName.get_device_name(mid=str(mid))
                                 try:
                                     text = str(r.text).replace("false","False").replace("true","True").replace("null","None")
                                     gatway_data = json.loads(str(text))
@@ -449,28 +445,28 @@ class method:
 
                 if setpe == "累计流量":
                     TOTAL = setpes.get(str(setpe))
-                    self.device.modify(mid='1020070060',code='TOTAL',value=str(TOTAL))
+                    self.device.modify_device(mid='1020070060',code='TOTAL',value=str(TOTAL))
 
                 if setpe == "瞬时流量":
                     Instantaneous_flow = setpes.get(str(setpe))
-                    self.device.modify(mid='1020070060',code='Instantaneous_flow',value=str(Instantaneous_flow))
+                    self.device.modify_device(mid='1020070060',code='Instantaneous_flow',value=str(Instantaneous_flow))
 
                 if setpe == "运行时间":
                     run_time_list = setpes.get(setpe)[0]
                     for run_device in run_time_list:
                         runtime = run_time_list.get(str(run_device))
-                        for device_name in getMid.keys():
+                        for device_name in device_mid.keys():
                             if str(device_name) == str(run_device):
-                                mid = getMid.get(str(device_name))
-                                self.device.modify(mid=str(mid),code="runTime",value=str(runtime))
+                                mid = device_mid.get(str(device_name))
+                                self.device.modify_device(mid=str(mid),code="runTime",value=str(runtime))
 
                 if setpe == "重故障":
                     device_list = setpes.get(setpe)
                     for device_ in device_list:
-                        for device_name in getMid.keys():
+                        for device_name in device_mid.keys():
                             if str(device_name) == str(device_):
-                                mid = getMid.get(str(device_name))
-                                self.device.modify(mid=str(mid),code="errorStatus",value=str('1'))
+                                mid = device_mid.get(str(device_name))
+                                self.device.modify_device(mid=str(mid),code="errorStatus",value=str('1'))
 
                                 # import socket
                                 # client = socket.socket()
@@ -480,7 +476,7 @@ class method:
                                 # client.close()
 
 
-    def getGatwayQueueAssert(self,test_id,queue_info):
+    def get_gatway_queue_assert(self, test_id, queue_info):
         """
         获取实时队列信息断言
         :param test_id:
@@ -488,7 +484,7 @@ class method:
         :return:
         """
         if queue_info != {}:
-            queue = self.gateway.getQueue(device_type=1)
+            queue = self.gatewayContrler.get_queue(device_type=1)
             readyqueueList = []
             runqueueList = []
             readyqueuelist_1 = []
@@ -505,7 +501,7 @@ class method:
             }
             try:
                 ready__Queue = queue['readyQueue']
-                excel_device_mid = method.getDeviceMid(self)
+                excel_device_mid = util.get_device_mid(self)
                 lst = []
                 for level_mid in ready__Queue:
                     get_mid_interface = level_mid['mid']
@@ -535,13 +531,13 @@ class method:
             l4 = []
             for device in Queue['待机队列'].values():
                 if device != []:
-                    key = method.getKeys(self,d=Queue['待机队列'], value=device)
+                    key = util.get_key(self,d=Queue['待机队列'], value=device)
                     l3.append(key[0])
                     l4.append(device)
             d_readyqueue = dict(zip(l3, l4))
             try:
                 run__Queue = queue['runQueue']
-                device_mid_text = method.getDeviceMid(self)
+                device_mid_text = util.get_device_mid(self)
                 lst_run = []
                 for m1 in run__Queue:
                     mid1 = m1['mid']
@@ -571,7 +567,7 @@ class method:
             l2 = []
             for device in Queue['运行队列'].values():
                 if device != []:
-                    key = method.getKeys(self,d=Queue['运行队列'], value=device)
+                    key = util.get_key(self,d=Queue['运行队列'], value=device)
                     l1.append(key[0])
                     l2.append(device)
             d_runqueue = dict(zip(l1, l2))
