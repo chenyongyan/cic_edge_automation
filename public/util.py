@@ -69,13 +69,13 @@ class util:
                         return TestDevice
 
 
-    def test_setup(self, caseTitle):
+    def test_setup(self, case_title):
         """
         测试初始化
         :param test_title:
         :return:
         """
-        if str(caseTitle) == "初始队列":
+        if str(case_title) == "初始队列":
             self.device.modify_device(mid=self.jsondata['母管压力变送器'], code=self.jsondata['母管压力参数码'], value='7')
             enableArray = self.jsondata['enableArray']
             enableArrayText = str(enableArray).replace('false', "False")
@@ -99,7 +99,7 @@ class util:
                 self.deviceContrler.device_stop(mid=str(mid))
             time.sleep(5)
 
-    def device_setup(self, deviceStatus):
+    def device_setup(self, device_status):
         """
         设备条件
         :param deviceStatus:
@@ -107,7 +107,7 @@ class util:
         """
         device_mid = self.get_device_mid()
         if deviceStatus != {}:
-            jsonData = eval(str(deviceStatus))
+            jsonData = eval(str(device_status))
             for state in jsonData.keys():
                 if state == '停机':
                     get_device_type = jsonData.get('停机')
@@ -194,14 +194,14 @@ class util:
                     assert gatway_data['ret'] == 1
 
 
-    def gatway_setup(self, gatwayStatus):
+    def gatway_setup(self, gatway_status):
         """
         网关初始化
-        :param gatwayStatus:
+        :param gatway_status:
         :return:
         """
-        if gatwayStatus != {}:
-            gatway_info = eval(str(gatwayStatus))
+        if gatway_status != {}:
+            gatway_info = eval(str(gatway_status))
             gatway_url = self.jsondata['url'] + self.jsondata['gatewayPort'] + self.jsondata['gateway']['modifyByGeteway']
             jointEnable = gatway_info.get('智控状态')
             if str(jointEnable) == "开启":
@@ -257,7 +257,7 @@ class util:
                     self.device.modify_device(mid='1020070060', code='TOTAL', value=str(TOTAL))
 
 
-    def test_setpe(self, Setpe, Title):
+    def test_setpe(self, test_setpe, test_title):
         """
         操作步骤
         :param Setpe:
@@ -265,8 +265,8 @@ class util:
         :return:
         """
         device_mid = util.get_device_mid(self)
-        if Setpe != {}:
-            setpes = eval(str(Setpe))
+        if test_setpe != {}:
+            setpes = eval(str(test_setpe))
             for setpe in setpes.keys():
                 if setpe == "智控状态":
                     join_state = setpes.get(setpe)
