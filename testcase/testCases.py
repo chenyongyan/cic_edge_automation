@@ -110,16 +110,16 @@ class case(unittest.TestCase):
     def test_start_02(self, test_id, test_title, test_device_setup, test_gatway_setup, test_setpe, test_expect_queue):
 
         # 网关智控初始化
-        self.util.test_setup(caseTitle=test_title)
+        self.util.test_setup(case_title=test_title)
 
         # 设备条件初始化
-        self.util.device_setup(deviceStatus=test_device_setup)
+        self.util.device_setup(device_status=test_device_setup)
 
         # 网关条件初始化
-        self.util.gatway_setup(gatwayStatus=test_gatway_setup)
+        self.util.gatway_setup(gatway_status=test_gatway_setup)
 
         # 用例执行操作步骤
-        self.util.test_setpe(Setpe=test_setpe, Title=test_title)
+        self.util.test_setpe(test_setpe=test_setpe, test_title=test_title)
 
         # 用例断言
         self.util.get_gatway_queue_assert(test_id=test_id, queue_info=test_expect_queue)
